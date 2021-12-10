@@ -41,6 +41,12 @@ public class Controller {
         pb.getTreeMap().put("CCC", "ccc");
         pb.getTreeMap().put("DDD", "ddd");
         pb.getTreeMap().put("EEE", "eee");
+        pb.getTreeMap().put("FFF", "fff");
+        pb.getTreeMap().put("GGG", "ggg");
+        pb.getTreeMap().put("HHH", "hhh");
+        pb.getTreeMap().put("III", "iii");
+        pb.getTreeMap().put("JJJ", "jjj");
+        pb.getTreeMap().put("KKK", "kkk");
         listView1.getItems().addAll(pb.getTreeMap().keySet());
         listView2.getItems().addAll(pb.getTreeMap().values());
 
@@ -74,13 +80,28 @@ public class Controller {
 
     @FXML
     void deletePressed(ActionEvent event) {
-        listView1.getItems().remove(listView1.getSelectionModel().getSelectedItem());
-        listView2.getItems().remove(listView2.getSelectionModel().getSelectedItem());
-//        pb.getTreeMap().remove(listView1.getItems().get(selected));
+        // The temps is here because without them it'll remove the first item, and won't be synchronized with the second
+        String temp1 = listView1.getSelectionModel().getSelectedItem();
+        String temp2 = listView2.getSelectionModel().getSelectedItem();
+        listView1.getItems().remove(temp1);
+        listView2.getItems().remove(temp2);
+        pb.getTreeMap().remove(temp1);
     }
 
     @FXML
     void searchPressed(ActionEvent event) {
+        int index = 0;
+        String searched = nameTxt.getText();
+        for (int i = 0; i < listView1.getItems().size(); i++) {
+            if (searched.equals(listView1.getItems().get(i))) {
+                index = i;
+                listView1.scrollTo(index);
+                listView1.getSelectionModel().select(index);
+                break;
+            } else {
+                // TODO label not found
+            }
+        }
 
     }
 

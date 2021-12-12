@@ -1,20 +1,22 @@
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.geometry.Orientation;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.input.ScrollEvent;
 
 public class Controller {
 
-    PhoneBook pb = new PhoneBook();
+    PhoneBook<String, String> pb = new PhoneBook<>();
     int selected = 0;
-    @FXML
-    private Button addBtn;
 
     @FXML
-    private Button deleteBtn;
+    private Label label;
 
     @FXML
     private ListView<String> listView1;
@@ -27,12 +29,6 @@ public class Controller {
 
     @FXML
     private TextField phoneNumTxt;
-
-    @FXML
-    private Button searchBtn;
-
-    @FXML
-    private Button updateBtn;
 
     @FXML
     public void initialize() {
@@ -53,6 +49,21 @@ public class Controller {
         // Make the 2 lists getting the same selected lines.
         listener(listView1, listView2);
         listener(listView2, listView1);
+
+        listView1.addEventFilter(javafx.scene.input.ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent event) {
+                System.out.println("Scroll event!");
+//                listView2.scrollTo(listView1.getOnScrollTo());
+            }
+        });
+//        listView1.addEventFilter(javafx.scene.control.ScrollToEvent.ANY, new EventHandler<ScrollToEvent>() {
+//            @Override
+//            public void handle(ScrollToEvent event) {
+//                System.out.println("ScrollToEvent!");
+//            }
+//        });
+
     }
 
     private void listener(ListView<String> listView1, ListView<String> listView2) {
@@ -67,46 +78,71 @@ public class Controller {
     }
 
     @FXML
-    void addPressed(ActionEvent event) {
+    private void addPressed(ActionEvent event) {
         String name = nameTxt.getText();
         String number = phoneNumTxt.getText();
-        pb.getTreeMap().put(name, number);
-
-        listView1.getItems().clear();
-        listView2.getItems().clear();
-        listView1.getItems().addAll(pb.getTreeMap().keySet());
-        listView2.getItems().addAll(pb.getTreeMap().values());
+        if (!pb.getTreeMap().containsKey(name)) { // If the name ISN'T contain in the phonebook
+            label.setText("");
+            addOrUpdate(name, number);
+        } else {
+            label.setText("This name already contains in the Phonebook.");
+        }
     }
 
     @FXML
-    void deletePressed(ActionEvent event) {
+    private void deletePressed(ActionEvent event) {
         // The temps is here because without them it'll remove the first item, and won't be synchronized with the second
         String temp1 = listView1.getSelectionModel().getSelectedItem();
         String temp2 = listView2.getSelectionModel().getSelectedItem();
-        listView1.getItems().remove(temp1);
-        listView2.getItems().remove(temp2);
-        pb.getTreeMap().remove(temp1);
+        if (!(temp1 == null || temp2 == null)) {
+            listView1.getItems().remove(temp1);
+            listView2.getItems().remove(temp2);
+            pb.getTreeMap().remove(temp1);
+            label.setText("");
+        } else {
+            label.setText("Please select name or phone number to delete");
+        }
     }
 
     @FXML
-    void searchPressed(ActionEvent event) {
-        int index = 0;
+    private void searchPressed(ActionEvent event) {
+        int index;
         String searched = nameTxt.getText();
         for (int i = 0; i < listView1.getItems().size(); i++) {
             if (searched.equals(listView1.getItems().get(i))) {
                 index = i;
                 listView1.scrollTo(index);
                 listView1.getSelectionModel().select(index);
+                label.setText("");
                 break;
             } else {
-                // TODO label not found
+                label.setText("This name is not contains in the Phonebook.");
             }
         }
-
     }
 
     @FXML
-    void updatePressed(ActionEvent event) {
+    private void updatePressed(ActionEvent event) {
+        String name = nameTxt.getText();
+        String number = phoneNumTxt.getText();
+        if (pb.getTreeMap().containsKey(name)) {
+            label.setText("");
+            addOrUpdate(name, number);
+        } else {
+            label.setText("This name is not contains in the Phonebook.");
+        }
+    }
 
+    private void addOrUpdate(String name, String number) {
+        if (!name.equals("") && !number.equals("")) {
+            pb.getTreeMap().put(name, number);
+            listView1.getItems().clear();
+            listView2.getItems().clear();
+            listView1.getItems().addAll(pb.getTreeMap().keySet());
+            listView2.getItems().addAll(pb.getTreeMap().values());
+            label.setText("");
+        } else {
+            label.setText("Please enter name and number");
+        }
     }
 }

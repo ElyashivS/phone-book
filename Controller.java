@@ -1,14 +1,11 @@
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
-import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.ScrollEvent;
+
+import javax.swing.*;
+import java.io.*;
 
 public class Controller {
 
@@ -32,42 +29,26 @@ public class Controller {
 
     @FXML
     public void initialize() {
-        pb.getTreeMap().put("AAA", "aaa");
-        pb.getTreeMap().put("BBB", "bbb");
-        pb.getTreeMap().put("CCC", "ccc");
-        pb.getTreeMap().put("DDD", "ddd");
-        pb.getTreeMap().put("EEE", "eee");
-        pb.getTreeMap().put("FFF", "fff");
-        pb.getTreeMap().put("GGG", "ggg");
-        pb.getTreeMap().put("HHH", "hhh");
-        pb.getTreeMap().put("III", "iii");
-        pb.getTreeMap().put("JJJ", "jjj");
-        pb.getTreeMap().put("KKK", "kkk");
+        pb.getTreeMap().put("A-One", "111");
+        pb.getTreeMap().put("B-Two", "222");
+        pb.getTreeMap().put("C-Three", "333");
+        pb.getTreeMap().put("D-Four", "444");
+        pb.getTreeMap().put("E-Five", "555");
+        pb.getTreeMap().put("F-Six", "666");
+        pb.getTreeMap().put("G-Seven", "777");
+        pb.getTreeMap().put("H-Eight", "888");
+        pb.getTreeMap().put("I-Nine", "999");
+        pb.getTreeMap().put("J-Ten", "100");
         listView1.getItems().addAll(pb.getTreeMap().keySet());
         listView2.getItems().addAll(pb.getTreeMap().values());
 
         // Make the 2 lists getting the same selected lines.
         listener(listView1, listView2);
         listener(listView2, listView1);
-
-        listView1.addEventFilter(javafx.scene.input.ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(ScrollEvent event) {
-                System.out.println("Scroll event!");
-//                listView2.scrollTo(listView1.getOnScrollTo());
-            }
-        });
-//        listView1.addEventFilter(javafx.scene.control.ScrollToEvent.ANY, new EventHandler<ScrollToEvent>() {
-//            @Override
-//            public void handle(ScrollToEvent event) {
-//                System.out.println("ScrollToEvent!");
-//            }
-//        });
-
     }
 
     private void listener(ListView<String> listView1, ListView<String> listView2) {
-        listView1.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+        listView1.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
                 selected = listView1.getSelectionModel().getSelectedIndex();
@@ -133,16 +114,65 @@ public class Controller {
         }
     }
 
+    @FXML
+    void savePressed(ActionEvent event) {
+        try {
+            FileOutputStream f = new FileOutputStream("MyPhonebook.txt");
+            ObjectOutputStream o = new ObjectOutputStream(f);
+
+            // Write objects to file
+            o.writeObject(pb);
+
+            o.close();
+            f.close();
+
+            listView1.getItems().clear();
+            listView2.getItems().clear();
+            listView1.getItems().addAll(pb.getTreeMap().keySet());
+            listView2.getItems().addAll(pb.getTreeMap().values());
+
+            JOptionPane.showMessageDialog(null, "Your Phonebook saved successfully " +
+                    "in the folder \"src\". The name of the file is: MyPhonebook.txt");
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    @FXML
+    void loadPressed(ActionEvent event) {
+        try {
+            FileInputStream fi = new FileInputStream("MyPhonebook.txt");
+            ObjectInputStream oi = new ObjectInputStream(fi);
+
+            // Read objects
+            pb = (PhoneBook<String, String>) oi.readObject();
+
+            oi.close();
+            fi.close();
+
+            listView1.getItems().clear();
+            listView2.getItems().clear();
+            listView1.getItems().addAll(pb.getTreeMap().keySet());
+            listView2.getItems().addAll(pb.getTreeMap().values());
+
+            JOptionPane.showMessageDialog(null, "Your Phonebook has been loaded successfully");
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e);
+        }
+    }
+
     private void addOrUpdate(String name, String number) {
-        if (!name.equals("") && !number.equals("")) {
+        if (name.equals("") || number.equals("")) {
+            label.setText("Please enter name and number");
+        } else if (!number.matches("[0-9]*")){
+            label.setText("Please enter only numbers at the Phone Number text field");
+        } else {
             pb.getTreeMap().put(name, number);
             listView1.getItems().clear();
             listView2.getItems().clear();
             listView1.getItems().addAll(pb.getTreeMap().keySet());
             listView2.getItems().addAll(pb.getTreeMap().values());
             label.setText("");
-        } else {
-            label.setText("Please enter name and number");
         }
     }
 }

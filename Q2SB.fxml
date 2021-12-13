@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="597.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <top>
       <HBox alignment="CENTER" prefHeight="88.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <children>
@@ -45,18 +45,28 @@
             <Label fx:id="label" textFill="RED" />
             <HBox alignment="CENTER" prefHeight="65.0" prefWidth="500.0">
                <children>
-                  <Button fx:id="addBtn" mnemonicParsing="false" onAction="#addPressed" prefHeight="50.0" prefWidth="100.0" text="Add" />
-                  <Button fx:id="updateBtn" mnemonicParsing="false" onAction="#updatePressed" prefHeight="50.0" prefWidth="100.0" text="Update">
+                  <Button fx:id="addBtn" mnemonicParsing="false" onAction="#addPressed" prefHeight="30.0" prefWidth="75.0" text="Add" />
+                  <Button fx:id="updateBtn" mnemonicParsing="false" onAction="#updatePressed" prefHeight="30.0" prefWidth="75.0" text="Update">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchPressed" prefHeight="50.0" prefWidth="100.0" text="Search">
+                  <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchPressed" prefHeight="30.0" prefWidth="75.0" text="Search">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#deletePressed" prefHeight="50.0" prefWidth="100.0" text="Delete">
+                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#deletePressed" prefHeight="30.0" prefWidth="75.0" text="Delete">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#savePressed" prefHeight="30.0" prefWidth="75.0" text="Save">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#loadPressed" prefHeight="30.0" prefWidth="75.0" text="Load">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>

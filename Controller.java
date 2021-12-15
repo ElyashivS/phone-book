@@ -2,7 +2,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.ScrollEvent;
 
 import javax.swing.*;
 import java.io.*;
@@ -39,12 +41,26 @@ public class Controller {
         pb.getTreeMap().put("H-Eight", "888");
         pb.getTreeMap().put("I-Nine", "999");
         pb.getTreeMap().put("J-Ten", "100");
+        pb.getTreeMap().put("K-Eleven", "110");
+        pb.getTreeMap().put("L-Twelve", "120");
+        pb.getTreeMap().put("M-Thirteen", "130");
         listView1.getItems().addAll(pb.getTreeMap().keySet());
         listView2.getItems().addAll(pb.getTreeMap().values());
 
         // Make the 2 lists getting the same selected lines.
         listener(listView1, listView2);
         listener(listView2, listView1);
+
+        // Make the two lists scroll together.
+        listView1.addEventFilter(ScrollEvent.ANY, e -> {
+            Node n1 = listView1.lookup(".scroll-bar");
+            if (n1 instanceof ScrollBar bar1) {
+                Node n2 = listView2.lookup(".scroll-bar");
+                if (n2 instanceof ScrollBar bar2) {
+                    bar1.valueProperty().bindBidirectional(bar2.valueProperty());
+                }
+            }
+        });
     }
 
     private void listener(ListView<String> listView1, ListView<String> listView2) {
@@ -115,7 +131,7 @@ public class Controller {
     }
 
     @FXML
-    void savePressed(ActionEvent event) {
+    private void savePressed(ActionEvent event) {
         try {
             FileOutputStream f = new FileOutputStream("MyPhonebook.txt");
             ObjectOutputStream o = new ObjectOutputStream(f);
@@ -139,7 +155,7 @@ public class Controller {
     }
 
     @FXML
-    void loadPressed(ActionEvent event) {
+    private void loadPressed(ActionEvent event) {
         try {
             FileInputStream fi = new FileInputStream("MyPhonebook.txt");
             ObjectInputStream oi = new ObjectInputStream(fi);
@@ -164,7 +180,7 @@ public class Controller {
     private void addOrUpdate(String name, String number) {
         if (name.equals("") || number.equals("")) {
             label.setText("Please enter name and number");
-        } else if (!number.matches("[0-9]*")){
+        } else if (!number.matches("[0-9]*")) {
             label.setText("Please enter only numbers at the Phone Number text field");
         } else {
             pb.getTreeMap().put(name, number);

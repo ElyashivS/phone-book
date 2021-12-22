@@ -9,6 +9,9 @@ import javafx.scene.input.ScrollEvent;
 import javax.swing.*;
 import java.io.*;
 
+/**
+ * This class represents the controller of the frontend.
+ */
 public class Controller {
 
     PhoneBook<String, String> pb = new PhoneBook<>();
@@ -31,6 +34,8 @@ public class Controller {
 
     @FXML
     public void initialize() {
+
+        // Put some keys and values
         pb.getTreeMap().put("A-One", "111");
         pb.getTreeMap().put("B-Two", "222");
         pb.getTreeMap().put("C-Three", "333");
@@ -47,7 +52,6 @@ public class Controller {
         listView1.getItems().addAll(pb.getTreeMap().keySet());
         listView2.getItems().addAll(pb.getTreeMap().values());
 
-        // Make the 2 lists getting the same selected lines.
         listener(listView1, listView2);
         listener(listView2, listView1);
 
@@ -63,6 +67,7 @@ public class Controller {
         });
     }
 
+    // Make the 2 lists getting the same selected lines.
     private void listener(ListView<String> listView1, ListView<String> listView2) {
         listView1.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<>() {
             @Override
@@ -74,6 +79,7 @@ public class Controller {
         });
     }
 
+    // This function add name and phone number to the phonebook.
     @FXML
     private void addPressed(ActionEvent event) {
         String name = nameTxt.getText();
@@ -86,6 +92,7 @@ public class Controller {
         }
     }
 
+    // This function delete name and phone number from the phonebook
     @FXML
     private void deletePressed(ActionEvent event) {
         // The temps is here because without them it'll remove the first item, and won't be synchronized with the second
@@ -101,6 +108,7 @@ public class Controller {
         }
     }
 
+    // This function find a name in the phonebook and remark it.
     @FXML
     private void searchPressed(ActionEvent event) {
         int index;
@@ -118,6 +126,7 @@ public class Controller {
         }
     }
 
+    // This function update the number of un exist contact.
     @FXML
     private void updatePressed(ActionEvent event) {
         String name = nameTxt.getText();
@@ -130,6 +139,7 @@ public class Controller {
         }
     }
 
+    // This function save the current phonebook to a text file.
     @FXML
     private void savePressed(ActionEvent event) {
         try {
@@ -150,10 +160,11 @@ public class Controller {
             JOptionPane.showMessageDialog(null, "Your Phonebook saved successfully " +
                     "in the folder \"src\". The name of the file is: MyPhonebook.txt");
         } catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
+    // This function load a saved file of phonebook
     @FXML
     private void loadPressed(ActionEvent event) {
         try {
@@ -173,10 +184,11 @@ public class Controller {
 
             JOptionPane.showMessageDialog(null, "Your Phonebook has been loaded successfully");
         } catch (ClassNotFoundException | IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
+    // This function checks that the name and phone number text field aren't empty and update the phonebook.
     private void addOrUpdate(String name, String number) {
         if (name.equals("") || number.equals("")) {
             label.setText("Please enter name and number");
